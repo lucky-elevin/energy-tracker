@@ -7,7 +7,7 @@
 
 // Configuration settings file format documentation can be found at:
 
-PRODUCT_BUNDLE_IDENTIFIER = com.YauheniLevin.Kaizen
+PRODUCT_BUNDLE_IDENTIFIER = com.YauheniLevin.Kaizen.staging
 SWIFT_OPTIMIZATION_LEVEL = -Onone
 ENABLE_TESTABILITY = YES
 DISPLAY_NAME = Kaizen Debug

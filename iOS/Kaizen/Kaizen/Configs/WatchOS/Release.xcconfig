@@ -9,6 +9,14 @@
 
 #include "../iOS/Release.xcconfig"
 
-PRODUCT_BUNDLE_IDENTIFIER = com.YauheniLevin.Kaizen.watchkitapp
-INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.YauheniLevin.Kaizen
-INFOPLIST_KEY_CFBundleDisplayName = $(DISPLAY_NAME)
+// 1. Set the main iOS app bundle ID for PRODUCTION
+MAIN_APP_BUNDLE_ID = com.YauheniLevin.Kaizen
+
+// 2. Watch App Bundle ID (auto-generated with suffix)
+PRODUCT_BUNDLE_IDENTIFIER = $(MAIN_APP_BUNDLE_ID).watchkitapp
+
+// 3. Link back to the companion iOS app
+INFOPLIST_KEY_WKCompanionAppBundleIdentifier = $(MAIN_APP_BUNDLE_ID)
+
+// 4. Display name under the watch icon
+INFOPLIST_KEY_CFBundleDisplayName = Kaizen

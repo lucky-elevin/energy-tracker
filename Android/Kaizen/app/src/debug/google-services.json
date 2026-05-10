@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1042686384864",
+    "project_id": "kaizen-staging-751ff",
+    "storage_bucket": "kaizen-staging-751ff.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042686384864:android:9a290444ee8384b55cce85",
+        "android_client_info": {
+          "package_name": "com.yauhenilevin.kaizen.staging"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5CTlxkY5X9jpX1Yk-EDeMPz_oPFCASdo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
