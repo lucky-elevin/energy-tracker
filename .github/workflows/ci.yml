@@ -225,5 +225,5 @@ jobs:
           appId: ${{ secrets.FIREBASE_IOS_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
           groups: qa-team
-          file: ios-artifact/release.ipa
+          file: ios-artifact/test_build.ipa
           
