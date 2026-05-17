@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "202646940464",
+    "project_id": "kaizen-production-5cf44",
+    "storage_bucket": "kaizen-production-5cf44.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202646940464:android:e36afecc96c8d915ae76f5",
+        "android_client_info": {
+          "package_name": "com.yauhenilevin.kaizen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACWdMynEE4MkLjSKMxfwl2qwQ9azOxx08"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

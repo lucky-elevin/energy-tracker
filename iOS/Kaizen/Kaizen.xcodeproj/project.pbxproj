@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9317F46F2FADC3DC00D9512E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9317F46E2FADC3DC00D9512E /* FirebaseAnalytics */; };
+		9317F4712FADC3F800D9512E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9317F4702FADC3F800D9512E /* FirebaseAnalytics */; };
+		9317F4732FADC3F800D9512E /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9317F4722FADC3F800D9512E /* FirebaseCrashlytics */; };
+		935CBAC62FA86E58008FE852 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 935CBAC52FA86E58008FE852 /* FirebaseCrashlytics */; };
 		936CF5E92F98216900BA6BE0 /* Kaizen-Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 936CF5DF2F98216800BA6BE0 /* Kaizen-Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -49,6 +53,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		930222622FB1024200BB4EE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		930222662FB10F8900BB4EE9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		936CF5B12F981D1400BA6BE0 /* Kaizen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kaizen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		936CF5BE2F981D1500BA6BE0 /* KaizenTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KaizenTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		936CF5C82F981D1500BA6BE0 /* KaizenUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KaizenUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +107,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9317F46F2FADC3DC00D9512E /* FirebaseAnalytics in Frameworks */,
+				935CBAC62FA86E58008FE852 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,12 +130,46 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9317F4712FADC3F800D9512E /* FirebaseAnalytics in Frameworks */,
+				9317F4732FADC3F800D9512E /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		930222612FB1024200BB4EE9 /* Prod */ = {
+			isa = PBXGroup;
+			children = (
+				930222662FB10F8900BB4EE9 /* GoogleService-Info.plist */,
+			);
+			path = Prod;
+			sourceTree = "<group>";
+		};
+		930222632FB1024200BB4EE9 /* Stage */ = {
+			isa = PBXGroup;
+			children = (
+				930222622FB1024200BB4EE9 /* GoogleService-Info.plist */,
+			);
+			path = Stage;
+			sourceTree = "<group>";
+		};
+		930222642FB1024200BB4EE9 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				930222612FB1024200BB4EE9 /* Prod */,
+				930222632FB1024200BB4EE9 /* Stage */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		9317F46D2FADC3DC00D9512E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		936CF5A82F981D1400BA6BE0 = {
 			isa = PBXGroup;
 			children = (
@@ -135,7 +177,9 @@
 				936CF5C12F981D1500BA6BE0 /* KaizenTests */,
 				936CF5CB2F981D1500BA6BE0 /* KaizenUITests */,
 				936CF5E02F98216800BA6BE0 /* Kaizen-Watch Watch App */,
+				9317F46D2FADC3DC00D9512E /* Frameworks */,
 				936CF5B22F981D1400BA6BE0 /* Products */,
+				930222642FB1024200BB4EE9 /* Firebase */,
 			);
 			sourceTree = "<group>";
 		};
@@ -161,6 +205,7 @@
 				936CF5AE2F981D1400BA6BE0 /* Frameworks */,
 				936CF5AF2F981D1400BA6BE0 /* Resources */,
 				936CF5ED2F98216900BA6BE0 /* Embed Watch Content */,
+				930222602FB0ECE000BB4EE9 /* Firebase Script */,
 			);
 			buildRules = (
 			);
@@ -172,6 +217,8 @@
 			);
 			name = Kaizen;
 			packageProductDependencies = (
+				935CBAC52FA86E58008FE852 /* FirebaseCrashlytics */,
+				9317F46E2FADC3DC00D9512E /* FirebaseAnalytics */,
 			);
 			productName = Kaizen;
 			productReference = 936CF5B12F981D1400BA6BE0 /* Kaizen.app */;
@@ -240,6 +287,8 @@
 			);
 			name = "Kaizen-Watch Watch App";
 			packageProductDependencies = (
+				9317F4702FADC3F800D9512E /* FirebaseAnalytics */,
+				9317F4722FADC3F800D9512E /* FirebaseCrashlytics */,
 			);
 			productName = "Kaizen-Watch Watch App";
 			productReference = 936CF5DF2F98216800BA6BE0 /* Kaizen-Watch Watch App.app */;
@@ -280,6 +329,9 @@
 			);
 			mainGroup = 936CF5A82F981D1400BA6BE0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				935CBAC42FA86E58008FE852 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 936CF5B22F981D1400BA6BE0 /* Products */;
 			projectDirPath = "";
@@ -323,6 +375,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		930222602FB0ECE000BB4EE9 /* Firebase Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+			);
+			name = "Firebase Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# For Release — Use Prod Config\nif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  CONFIG_PATH=\"${PROJECT_DIR}/Firebase/Prod/GoogleService-Info.plist\"\nelse\n# For (Debug, Staging) — Use Stage Firebase Config\n  CONFIG_PATH=\"${PROJECT_DIR}/Firebase/Stage/GoogleService-Info.plist\"\nfi\n\ncp \"${CONFIG_PATH}\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\n\n\"${BUILD_DIR%Build/*}SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\" -gsp \"${CONFIG_PATH}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		936CF5AD2F981D1400BA6BE0 /* Sources */ = {
@@ -445,6 +521,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
@@ -553,13 +630,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "$(INFOPLIST_KEY_WKCompanionAppBundleIdentifier)";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "$(MAIN_APP_BUNDLE_ID)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.YauheniLevin.Kaizen.staging.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MAIN_APP_BUNDLE_ID).watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*]" = "Profile-kaizen-watch-stage";
@@ -710,6 +787,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
@@ -759,6 +837,7 @@
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
@@ -922,13 +1001,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "$(INFOPLIST_KEY_WKCompanionAppBundleIdentifier)";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "$(MAIN_APP_BUNDLE_ID)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.YauheniLevin.Kaizen.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MAIN_APP_BUNDLE_ID).watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -960,13 +1039,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(DISPLAY_NAME)";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "$(INFOPLIST_KEY_WKCompanionAppBundleIdentifier)";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "$(MAIN_APP_BUNDLE_ID)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.YauheniLevin.Kaizen.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(MAIN_APP_BUNDLE_ID).watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=watchos*]" = "Profile-Kaizen-Watch";
@@ -1038,6 +1117,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		935CBAC42FA86E58008FE852 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.12.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9317F46E2FADC3DC00D9512E /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 935CBAC42FA86E58008FE852 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		9317F4702FADC3F800D9512E /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 935CBAC42FA86E58008FE852 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		9317F4722FADC3F800D9512E /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 935CBAC42FA86E58008FE852 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		935CBAC52FA86E58008FE852 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 935CBAC42FA86E58008FE852 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 936CF5A92F981D1400BA6BE0 /* Project object */;
 }

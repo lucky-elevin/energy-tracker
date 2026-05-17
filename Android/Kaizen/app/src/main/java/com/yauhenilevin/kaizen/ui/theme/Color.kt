@@ -1,4 +1,4 @@
-package com.example.kaizen.ui.theme
+package com.yauhenilevin.kaizen.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

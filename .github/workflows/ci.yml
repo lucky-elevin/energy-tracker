@@ -164,7 +164,7 @@ jobs:
         with:
           name: ios-build
           path: iOS/Kaizen/build/*.ipa
-
+   
   android:
     name: Android Build
     needs: changes
@@ -182,12 +182,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build Android
+      - name: Build Android Staging
         run: |
           cd Android/Kaizen
           chmod +x gradlew
-          ./gradlew build
-
+          ./gradlew assembleDebug
+      - name: Upload Android to Firebase Distribution
+        if: github.event.pull_request.head.repo.full_name == github.event.pull_request.base.repo.full_name
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with: 
+          appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
+          groups: qa-team
+          file: Android/Kaizen/app/build/outputs/apk/debug/app-debug.apk
   backend:
     name: Backend Tests
     needs: changes
@@ -198,3 +205,25 @@ jobs:
       - name: Run backend tests
         run: |
           cd Backend && swift test
+
+  distribute_ios:
+    name: Distribute iOS to Firebase
+    needs: ios
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download iOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-build
+          path: ios-artifact
+      - name: Prepare IPA file
+        run: |
+          mv ios-artifact/*.ipa ios-artifact/test_build.ipa
+      - name: Upload iOS to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_IOS_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
+          groups: qa-team
+          file: ios-artifact/test_build.ipa
+          
