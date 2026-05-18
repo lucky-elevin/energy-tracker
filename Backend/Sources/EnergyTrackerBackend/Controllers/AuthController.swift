@@ -47,7 +47,7 @@ struct AuthController: RouteCollection {
     }
     
     // Never store plain-text passwords.
-    let passwordHash = try Bcrypt.hash(payload.password)
+    let passwordHash = try req.password.hash(payload.password)
     let user = User(email: payload.email, passwordHash: passwordHash)
     try await user.save(on: req.db)
     
