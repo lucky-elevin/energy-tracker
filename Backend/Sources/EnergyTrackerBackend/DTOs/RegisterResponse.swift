@@ -8,6 +8,7 @@
 import Foundation
 import Vapor
 
+
 /// Response returned after a successful user registration.
 struct RegisterResponse: Content {
     /// Unique identifier assigned to the created user.

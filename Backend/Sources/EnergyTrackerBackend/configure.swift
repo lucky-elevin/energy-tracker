@@ -3,6 +3,7 @@ import Fluent
 import FluentPostgresDriver
 import Leaf
 import Vapor
+import JWT
 
 extension Application {
   /// Returns the database name for the current environment.
@@ -11,12 +12,9 @@ extension Application {
   /// In other environments, the value comes from `DATABASE_NAME`
   /// with `energy_tracker` as fallback.
   var dataBaseName: String {
-    let testableDataBase = "energy_tracker_test"
-    let dataBase = Environment.get(EnvironmentKey.databaseName) ?? "energy_tracker"
-    return environment == .testing ? testableDataBase : dataBase
+    Environment.get("DATABASE_NAME") ?? "energy_tracker"
   }
 }
-
 
 private enum EnvironmentKey {
   static let databaseHost = "DATABASE_HOST"
@@ -34,10 +32,10 @@ private struct AppDatabaseConfiguration {
   let name: String
   
   init(app: Application) {
-    self.host = Environment.get(EnvironmentKey.databaseHost) ?? "localhost"
-    self.port = Environment.get(EnvironmentKey.databasePort).flatMap(Int.init(_:)) ?? 5432
-    self.username = Environment.get(EnvironmentKey.databaseUsername) ?? "postgres"
-    self.password = Environment.get(EnvironmentKey.databasePassword) ?? ""
+    self.host = Environment.get("DATABASE_HOST") ?? "127.0.0.1"
+    self.port = Environment.get("DATABASE_PORT").flatMap(Int.init) ?? 5433
+    self.username = Environment.get("DATABASE_USERNAME") ?? "postgres"
+    self.password = Environment.get("DATABASE_PASSWORD") ?? "12345"
     self.name = app.dataBaseName
   }
 }
@@ -74,10 +72,13 @@ public func configure(_ app: Application) async throws {
   app.passwords.use(.bcrypt)
   app.migrations.add(CreateUser())
   app.views.use(.leaf)
-  
+
   // register routes
   try routes(app)
-  
+
+  let jwtSecret = Environment.get("JWT_SECRET") ?? "dev-12345"
+  app.jwt.signers.use(.hs256(key: jwtSecret))
+
   if app.environment == .development {
     try await app.autoMigrate()
   }

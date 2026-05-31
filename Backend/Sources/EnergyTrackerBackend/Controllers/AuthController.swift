@@ -16,6 +16,7 @@ struct AuthController: RouteCollection {
   func boot(routes: any RoutesBuilder) throws {
     let auth = routes.grouped("auth")
     auth.post("register", use: register)
+    auth.post("login", use: login)
   }
   
   /// Creates a new user account from registration payload data.
@@ -52,5 +53,59 @@ struct AuthController: RouteCollection {
     try await user.save(on: req.db)
     
     return RegisterResponse(id: user.id, email: user.email)
+  }
+  
+  /// Authenticates an existing user and returns login response data.
+  ///
+  /// This endpoint performs the following steps:
+  /// 1. Validates and decodes `LoginRequest` from the request body.
+  /// 2. Looks up a user by the provided email.
+  /// 3. Returns `401 Unauthorized` when user is not found.
+  /// 4. Verifies the provided password against the stored hash.
+  /// 5. Returns `401 Unauthorized` when password verification fails.
+  /// 6. Builds a short-lived JWT payload and signs it.
+  /// 7. Returns `LoginResponse` with user information and access token.
+  ///
+  /// - Parameter req: The current HTTP request containing JSON payload and app services.
+  /// - Returns: `LoginResponse` for the authenticated user.
+  /// - Throws: `Abort(.unauthorized)` for invalid credentials, plus validation,
+  ///   decoding, database, password verification, and JWT signing errors.
+  @Sendable
+  func login(req: Request) async throws -> LoginResponse {
+    try LoginRequest.validate(content: req)
+    // Parse and validate request body as a login payload.
+    let payload = try req.content.decode(LoginRequest.self)
+    
+    let user = try await User.query(on: req.db)
+      .filter(\.$email == payload.email)
+      .first()
+
+    guard let existingUser = user else {
+      throw Abort(.unauthorized, reason: "Invalid email or password")
+    }
+
+    let isPasswordValid = try req.password.verify(
+      payload.password,
+      created: existingUser.passwordHash
+    )
+
+    guard isPasswordValid else {
+      throw Abort(.unauthorized, reason: "Invalid email or password")
+    }
+
+    // Since this is an access token it will live 15 minutes
+    let tokenPayload = SessionToken(
+      subject: .init(value: try existingUser.requireID().uuidString),
+      expiration: .init(value: Date().addingTimeInterval(15 * 60)),
+      email: existingUser.email
+    )
+
+    let tokenString = try req.jwt.sign(tokenPayload)
+
+    return LoginResponse(
+      id: existingUser.id,
+      email: existingUser.email,
+      accessToken: tokenString
+    )
   }
 }
