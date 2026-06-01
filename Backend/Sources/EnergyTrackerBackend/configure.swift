@@ -12,7 +12,10 @@ extension Application {
   /// In other environments, the value comes from `DATABASE_NAME`
   /// with `energy_tracker` as fallback.
   var dataBaseName: String {
-    Environment.get("DATABASE_NAME") ?? "energy_tracker"
+    if environment == .testing {
+      return "energy_tracker_test"
+    }
+    return Environment.get("DATABASE_NAME") ?? "energy_tracker"
   }
 }
 
