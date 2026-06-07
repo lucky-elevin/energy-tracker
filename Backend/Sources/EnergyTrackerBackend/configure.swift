@@ -60,7 +60,7 @@ private struct AppDatabaseConfiguration {
 /// - Parameter app: Vapor application instance to configure before startup.
 public func configure(_ app: Application) async throws {  
   let databaseConfiguration = AppDatabaseConfiguration(app: app)
-  
+
   app.databases.use(
     .postgres(
       hostname: databaseConfiguration.host,
@@ -79,8 +79,15 @@ public func configure(_ app: Application) async throws {
   // register routes
   try routes(app)
 
-  let jwtSecret = Environment.get("JWT_SECRET") ?? "dev-12345"
-  app.jwt.signers.use(.hs256(key: jwtSecret))
+  switch app.environment {
+  case .testing:
+    app.jwt.signers.use(.hs256(key: "test-secret"))
+  default:
+    guard let jwtSecret = Environment.get("JWT_SECRET") else {
+      fatalError("JWT_SECRET is missing")
+    }
+    app.jwt.signers.use(.hs256(key: jwtSecret))
+  }
 
   if app.environment == .development {
     try await app.autoMigrate()
