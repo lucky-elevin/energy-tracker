@@ -196,15 +196,41 @@ jobs:
           groups: qa-team
           file: Android/Kaizen/app/build/outputs/apk/debug/app-debug.apk
   backend:
-    name: Backend Tests
-    needs: changes
-    if: needs.changes.outputs.backend == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run backend tests
-        run: |
-          cd Backend && swift test
+  name: Backend Tests
+  needs: changes
+  if: needs.changes.outputs.backend == 'true'
+  runs-on: ubuntu-latest
+
+  services:
+    postgres:
+      image: postgres:17
+      env:
+        POSTGRES_DB: energy_tracker_test
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+      ports:
+        - 5433:5432
+
+      options: >-
+        --health-cmd="pg_isready -U postgres"
+        --health-interval=10s
+        --health-timeout=5s
+        --health-retries=5
+
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Run backend tests
+      env:
+        DATABASE_HOST: localhost
+        DATABASE_PORT: 5433
+        DATABASE_NAME: energy_tracker_test
+        DATABASE_USER: postgres
+        DATABASE_PASSWORD: postgres
+        JWT_SECRET: test-secret
+      run: |
+        cd Backend
+        swift test
 
   distribute_ios:
     name: Distribute iOS to Firebase
@@ -226,4 +252,3 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
           groups: qa-team
           file: ios-artifact/test_build.ipa
-          
