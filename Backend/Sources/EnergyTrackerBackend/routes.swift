@@ -1,5 +1,5 @@
 //
-//  Routes.swift
+//  routes.swift
 //  EnergyTrackerBackend
 //
 //  Created by Yauheni Levin on 18/05/2026.
