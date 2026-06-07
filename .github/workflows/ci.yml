@@ -196,10 +196,10 @@ jobs:
           groups: qa-team
           file: Android/Kaizen/app/build/outputs/apk/debug/app-debug.apk
   backend:
-  name: Backend Tests
-  needs: changes
-  if: needs.changes.outputs.backend == 'true'
-  runs-on: ubuntu-latest
+    name: Backend Tests
+    needs: changes
+    if: needs.changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
 
   services:
     postgres:
