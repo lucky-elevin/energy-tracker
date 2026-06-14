@@ -18,4 +18,8 @@ public func routes(_ app: Application) throws {
   }
   
   try app.register(collection: AuthController())
+  
+  let protectedRoutes = app.grouped(SessionTokenAuthenticator(), User.guardMiddleware())
+  
+  try protectedRoutes.register(collection: ProfileController())
 }

@@ -34,12 +34,12 @@ private struct AppDatabaseConfiguration {
   let password: String
   let name: String
   
-  init(app: Application) {
+  init(app: Application, databaseName: String? = nil) {
     self.host = Environment.get("DATABASE_HOST") ?? "127.0.0.1"
     self.port = Environment.get("DATABASE_PORT").flatMap(Int.init) ?? 5433
     self.username = Environment.get("DATABASE_USERNAME") ?? "postgres"
     self.password = Environment.get("DATABASE_PASSWORD") ?? "12345"
-    self.name = app.dataBaseName
+    self.name = databaseName ?? app.dataBaseName
   }
 }
 
@@ -58,8 +58,8 @@ private struct AppDatabaseConfiguration {
 /// If missing, sensible local defaults are used.
 ///
 /// - Parameter app: Vapor application instance to configure before startup.
-public func configure(_ app: Application) async throws {  
-  let databaseConfiguration = AppDatabaseConfiguration(app: app)
+public func configure(_ app: Application, databaseName: String? = nil) async throws {
+  let databaseConfiguration = AppDatabaseConfiguration(app: app, databaseName: databaseName)
 
   app.databases.use(
     .postgres(

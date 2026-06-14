@@ -14,26 +14,7 @@ import Vapor
 @Suite("Auth Controller Tests", .serialized)
 /// Integration tests for registration and login endpoints in `AuthController`.
 struct AuthControllerTests {
-  /// Creates and migrates an isolated application instance for each test.
-  private func withTestApp(
-    _ body: (Application) async throws -> Void
-  ) async throws {
-    let app = try await Application.make(.testing)
-    
-    do {
-      try await configure(app)
-      try await app.autoRevert()
-      try await app.autoMigrate()
-      
-      try await body(app)
-    } catch {
-      try await app.asyncShutdown()
-      throw error
-    }
-    
-    try await app.asyncShutdown()
-  }
-  
+
   @Test("User registration success")
   func testUserRegistrationSuccess() async throws {
     try await withTestApp { app in
