@@ -9,7 +9,7 @@ import Foundation
 import Vapor
 
 /// Handles profile-related API routes.
-struct ProfileController: RouteCollection {
+struct ProfileController: RouteCollection, Sendable {
   /// Registers profile routes under the `/profile` path.
   ///
   /// The current route set exposes `GET /profile`, which returns the profile

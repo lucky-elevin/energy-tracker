@@ -10,7 +10,7 @@ import Vapor
 import Fluent
 
 /// Handles authentication-related HTTP routes.
-struct AuthController: RouteCollection {
+struct AuthController: RouteCollection, Sendable {
   private enum AuthConstants {
       static let dummyPasswordHash =
           "$2b$12$ai8cQaFYAO12P.VcDZHtvOm9No51XFqdj1DTwUzl5gcWyEffHD3gC"
@@ -38,7 +38,6 @@ struct AuthController: RouteCollection {
   /// - Returns: A `RegisterResponse` with public data of the newly created user.
   /// - Throws: `Abort(.conflict)` when a user with the same email already exists,
   ///   plus any decoding, hashing, or database persistence errors.
-  @Sendable
   func register(req: Request) async throws -> RegisterResponse {
     try RegisterRequest.validate(content: req)
     // Parse and validate request body as a registration payload.
@@ -77,7 +76,6 @@ struct AuthController: RouteCollection {
   /// - Returns: `LoginResponse` for the authenticated user.
   /// - Throws: `Abort(.unauthorized)` for invalid credentials, plus validation,
   ///   decoding, database, password verification, and JWT signing errors.
-  @Sendable
   func login(req: Request) async throws -> LoginResponse {
     try LoginRequest.validate(content: req)
     // Parse and validate request body as a login payload.

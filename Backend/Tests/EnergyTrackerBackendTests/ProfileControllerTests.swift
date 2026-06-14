@@ -12,28 +12,18 @@ import Fluent
 import Vapor
 import Testing
 
+/// Tests the profile endpoints exposed by `ProfileController`.
+///
+/// The suite is serialized because the tests use a shared test application setup
+/// and database state that should not be exercised concurrently.
 @Suite("ProfileControllerTests tests", .serialized)
-struct ProfileControllerTests {
-  /// Creates and migrates an isolated application instance for each test.
-  private func withTestApp(
-    _ body: (Application) async throws -> Void
-  ) async throws {
-    let app = try await Application.make(.testing)
-    
-    do {
-      try await configure(app)
-      try await app.autoRevert()
-      try await app.autoMigrate()
-      
-      try await body(app)
-    } catch {
-      try await app.asyncShutdown()
-      throw error
-    }
-    
-    try await app.asyncShutdown()
-  }
-  
+struct ProfileControllerTests {  
+  /// Verifies that an authenticated user can fetch their profile.
+  ///
+  /// The test registers a user, logs in to obtain a bearer token, and uses that
+  /// token to call `GET /profile`. A successful response should contain the
+  /// authenticated user's email and identifier while optional profile fields
+  /// remain empty for a newly registered account.
   @Test("User profile success")
   func testUserProfileSuccess() async throws {
     try await withTestApp { app in
@@ -87,6 +77,10 @@ struct ProfileControllerTests {
     }
   }
   
+  /// Verifies that `GET /profile` rejects requests without a bearer token.
+  ///
+  /// The route requires an authenticated user, so a request that does not pass
+  /// through `SessionTokenAuthenticator` should fail with `401 Unauthorized`.
   @Test("User profile unauthorized without token")
   func testUserProfileUnauthorizedWithoutToken() async throws {
     try await withTestApp { app in
