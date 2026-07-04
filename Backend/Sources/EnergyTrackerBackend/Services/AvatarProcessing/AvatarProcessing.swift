@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol AvatarProcessing: Sendable {
+public protocol AvatarProcessing: Sendable {
   func process(
     inputPath: String,
     smallOutputPath: String,

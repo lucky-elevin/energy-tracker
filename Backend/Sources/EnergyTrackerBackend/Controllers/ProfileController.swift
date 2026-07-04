@@ -30,14 +30,14 @@ struct ProfileController: RouteCollection, Sendable {
   func getProfile(req: Request) async throws -> ProfileResponse {
     let user = try req.auth.require(User.self)
     let avatar: AvatarResponse?
-
+    
     if let smallURL = user.avatarSmallURL,
        let largeURL = user.avatarLargeURL {
       avatar = .init(smallURL: smallURL, largeURL: largeURL)
     } else {
       avatar = nil
     }
-
+    
     return ProfileResponse(
       id: try user.requireID(),
       email: user.email,
@@ -69,90 +69,75 @@ struct ProfileController: RouteCollection, Sendable {
     let user = try req.auth.require(User.self)
     let payload = try req.content.decode(AvatarUploadRequest.self)
     let maxSize = 5 * 1024 * 1024
-
+    
     guard payload.avatar.data.readableBytes <= maxSize else {
       throw Abort(.payloadTooLarge, reason: "Avatar image is too large")
     }
     
     let supportedFormats = ["image/jpeg", "image/png", "image/webp"]
-
+    
     guard let contentType = payload.avatar.contentType?.serialize(), supportedFormats.contains(contentType) else {
       throw Abort(.badRequest, reason: "Only JPEG, PNG and WebP images are supported")
     }
-
+    
     let userId = try user.requireID()
     let avatarDirectory = req.application.directory.publicDirectory
-        + "avatars/\(userId.uuidString)/"
-
+    + "avatars/\(userId.uuidString)/"
+    
     try FileManager.default.createDirectory(
       atPath: avatarDirectory,
       withIntermediateDirectories: true
-     )
+    )
     
     let originalPath = avatarDirectory + "original_upload"
     let smallPath = avatarDirectory + "small.jpg"
     let largePath = avatarDirectory + "large.jpg"
-
+    
     try await req.fileio.writeFile(payload.avatar.data, at: originalPath)
-
+    
+    defer {
+      try? FileManager.default.removeItem(
+        atPath: originalPath
+      )
+    }
+    
     try await req.application.avatarProcessor.process(
       inputPath: originalPath,
       smallOutputPath: smallPath,
       largeOutputPath: largePath
     )
-
-    try? FileManager.default.removeItem(atPath: originalPath)
+    
     user.avatarSmallURL = "/avatars/\(userId.uuidString)/small.jpg"
     user.avatarLargeURL = "/avatars/\(userId.uuidString)/large.jpg"
-
+    
     try await user.save(on: req.db)
     return try ProfileResponse(user: user)
   }
   
-  enum AvatarImageProcessor {
-    static func process(
-      inputPath: String,
-      smallOutputPath: String,
-      largeOutputPath: String
-    ) async throws {
-      try await runMagick(
-        inputPath: inputPath,
-        outputPath: smallOutputPath,
-        size: 128
-      )
-
-      try await runMagick(
-        inputPath: inputPath,
-        outputPath: largeOutputPath,
-        size: 1024
-      )
-    }
-
-    private static func runMagick(
-      inputPath: String,
-      outputPath: String,
-      size: Int
-    ) async throws {
-      let process = Process()
-      process.executableURL = URL(fileURLWithPath: "/usr/bin/magick")
-
-      process.arguments = [
-        inputPath,
-        "-auto-orient",
-        "-resize", "\(size)x\(size)^",
-        "-gravity", "center",
-        "-extent", "\(size)x\(size)",
-        "-strip",
-        "-quality", "85",
-        outputPath
-      ]
-
-      try process.run()
-      process.waitUntilExit()
-
-      guard process.terminationStatus == 0 else {
-        throw Abort(.internalServerError, reason: "Failed to process avatar image")
-      }
+  private static func runMagick(
+    inputPath: String,
+    outputPath: String,
+    size: Int
+  ) async throws {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/magick")
+    
+    process.arguments = [
+      inputPath,
+      "-auto-orient",
+      "-resize", "\(size)x\(size)^",
+      "-gravity", "center",
+      "-extent", "\(size)x\(size)",
+      "-strip",
+      "-quality", "85",
+      outputPath
+    ]
+    
+    try process.run()
+    process.waitUntilExit()
+    
+    guard process.terminationStatus == 0 else {
+      throw Abort(.internalServerError, reason: "Failed to process avatar image")
     }
   }
 }

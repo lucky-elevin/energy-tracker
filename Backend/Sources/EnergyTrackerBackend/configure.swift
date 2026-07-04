@@ -58,7 +58,11 @@ private struct AppDatabaseConfiguration {
 /// If missing, sensible local defaults are used.
 ///
 /// - Parameter app: Vapor application instance to configure before startup.
-public func configure(_ app: Application, databaseName: String? = nil) async throws {
+public func configure(
+  _ app: Application,
+  databaseName: String? = nil,
+  avatarProcessor: (any AvatarProcessing)? = nil
+) async throws {
   let databaseConfiguration = AppDatabaseConfiguration(app: app, databaseName: databaseName)
 
   app.databases.use(
@@ -77,7 +81,11 @@ public func configure(_ app: Application, databaseName: String? = nil) async thr
   app.views.use(.leaf)
   app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
-  app.avatarProcessor = try ImageMagickAvatarProcessor()
+  if let avatarProcessor {
+     app.avatarProcessor = avatarProcessor
+   } else {
+     app.avatarProcessor = try ImageMagickAvatarProcessor()
+   }
   // register routes
   try routes(app)
 
