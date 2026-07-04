@@ -18,7 +18,10 @@ struct SessionTokenAuthenticator: AsyncBearerAuthenticator {
   /// longer exists, the request is left unauthenticated so route middleware can
   /// reject it through the normal authentication flow.
   func authenticate(bearer: BearerAuthorization, for request: Request) async throws {
-    let payload = try request.jwt.verify(bearer.token, as: SessionToken.self)
+    let payload = try request.jwt.verify(
+      bearer.token,
+      as: SessionToken.self
+    )
 
     guard let userID = UUID(uuidString: payload.subject.value),
     let user = try await User.find(userID, on: request.db) else {

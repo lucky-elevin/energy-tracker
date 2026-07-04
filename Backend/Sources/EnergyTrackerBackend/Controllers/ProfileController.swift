@@ -17,6 +17,8 @@ struct ProfileController: RouteCollection, Sendable {
   func boot(routes: any RoutesBuilder) throws {
     let profile = routes.grouped("profile")
     profile.get(use: getProfile)
+    profile.patch(use: updateProfile)
+    profile.post(use: uploadAvatar)
   }
   
   /// Returns the profile for the authenticated user.
@@ -27,12 +29,130 @@ struct ProfileController: RouteCollection, Sendable {
   /// mapped into `ProfileResponse` so the API exposes only profile fields.
   func getProfile(req: Request) async throws -> ProfileResponse {
     let user = try req.auth.require(User.self)
-    
+    let avatar: AvatarResponse?
+
+    if let smallURL = user.avatarSmallURL,
+       let largeURL = user.avatarLargeURL {
+      avatar = .init(smallURL: smallURL, largeURL: largeURL)
+    } else {
+      avatar = nil
+    }
+
     return ProfileResponse(
       id: try user.requireID(),
       email: user.email,
       displayName: user.displayName,
-      avatarURL: user.avatarURL
+      avatar: avatar
     )
+  }
+  
+  func updateProfile(req: Request) async throws -> ProfileResponse {
+    try UpdateProfileRequest.validate(content: req)
+    
+    let user = try req.auth.require(User.self)
+    let payload = try req.content.decode(UpdateProfileRequest.self)
+    
+    if let displayName = payload.displayName {
+      let trimmedDisplayName = displayName
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+      guard !trimmedDisplayName.isEmpty else {
+        throw Abort(.badRequest, reason: "Display name cannot be empty")
+      }
+      user.displayName = trimmedDisplayName
+    }
+    try await user.save(on: req.db)
+    
+    return try ProfileResponse(user: user)
+  }
+  
+  func uploadAvatar(req: Request) async throws -> ProfileResponse {
+    let user = try req.auth.require(User.self)
+    let payload = try req.content.decode(AvatarUploadRequest.self)
+    let maxSize = 5 * 1024 * 1024
+
+    guard payload.avatar.data.readableBytes <= maxSize else {
+      throw Abort(.payloadTooLarge, reason: "Avatar image is too large")
+    }
+    
+    let supportedFormats = ["image/jpeg", "image/png", "image/webp"]
+
+    guard let contentType = payload.avatar.contentType?.serialize(), supportedFormats.contains(contentType) else {
+      throw Abort(.badRequest, reason: "Only JPEG, PNG and WebP images are supported")
+    }
+
+    let userId = try user.requireID()
+    let avatarDirectory = req.application.directory.publicDirectory
+        + "avatars/\(userId.uuidString)/"
+
+    try FileManager.default.createDirectory(
+      atPath: avatarDirectory,
+      withIntermediateDirectories: true
+     )
+    
+    let originalPath = avatarDirectory + "original_upload"
+    let smallPath = avatarDirectory + "small.jpg"
+    let largePath = avatarDirectory + "large.jpg"
+
+    try await req.fileio.writeFile(payload.avatar.data, at: originalPath)
+
+    try await req.application.avatarProcessor.process(
+      inputPath: originalPath,
+      smallOutputPath: smallPath,
+      largeOutputPath: largePath
+    )
+
+    try? FileManager.default.removeItem(atPath: originalPath)
+    user.avatarSmallURL = "/avatars/\(userId.uuidString)/small.jpg"
+    user.avatarLargeURL = "/avatars/\(userId.uuidString)/large.jpg"
+
+    try await user.save(on: req.db)
+    return try ProfileResponse(user: user)
+  }
+  
+  enum AvatarImageProcessor {
+    static func process(
+      inputPath: String,
+      smallOutputPath: String,
+      largeOutputPath: String
+    ) async throws {
+      try await runMagick(
+        inputPath: inputPath,
+        outputPath: smallOutputPath,
+        size: 128
+      )
+
+      try await runMagick(
+        inputPath: inputPath,
+        outputPath: largeOutputPath,
+        size: 1024
+      )
+    }
+
+    private static func runMagick(
+      inputPath: String,
+      outputPath: String,
+      size: Int
+    ) async throws {
+      let process = Process()
+      process.executableURL = URL(fileURLWithPath: "/usr/bin/magick")
+
+      process.arguments = [
+        inputPath,
+        "-auto-orient",
+        "-resize", "\(size)x\(size)^",
+        "-gravity", "center",
+        "-extent", "\(size)x\(size)",
+        "-strip",
+        "-quality", "85",
+        outputPath
+      ]
+
+      try process.run()
+      process.waitUntilExit()
+
+      guard process.terminationStatus == 0 else {
+        throw Abort(.internalServerError, reason: "Failed to process avatar image")
+      }
+    }
   }
 }

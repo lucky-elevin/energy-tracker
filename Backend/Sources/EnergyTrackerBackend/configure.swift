@@ -11,7 +11,7 @@ extension Application {
   /// In testing mode, a dedicated test database is always used.
   /// In other environments, the value comes from `DATABASE_NAME`
   /// with `energy_tracker` as fallback.
-  var dataBaseName: String {
+  var databaseName: String {
     if environment == .testing {
       return "energy_tracker_test"
     }
@@ -39,7 +39,7 @@ private struct AppDatabaseConfiguration {
     self.port = Environment.get("DATABASE_PORT").flatMap(Int.init) ?? 5433
     self.username = Environment.get("DATABASE_USERNAME") ?? "postgres"
     self.password = Environment.get("DATABASE_PASSWORD") ?? "12345"
-    self.name = databaseName ?? app.dataBaseName
+    self.name = databaseName ?? app.databaseName
   }
 }
 
@@ -75,7 +75,9 @@ public func configure(_ app: Application, databaseName: String? = nil) async thr
   app.passwords.use(.bcrypt)
   app.migrations.add(CreateUser())
   app.views.use(.leaf)
+  app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
+  app.avatarProcessor = try ImageMagickAvatarProcessor()
   // register routes
   try routes(app)
 

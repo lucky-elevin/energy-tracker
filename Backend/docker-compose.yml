@@ -21,7 +21,7 @@ services:
       context: .
     # 👉 ПРОСТО ГОВОРИМ ЧИТАТЬ ИЗ .ENV
     env_file:
-      - .env
+      - .env.docker
     depends_on:
       - db
     command: ["migrate", "--yes"]
