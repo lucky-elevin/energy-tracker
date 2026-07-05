@@ -23,6 +23,12 @@ struct CreateHabitRequest: Content {
   let dueDate: Date?
 }
 
+extension CreateHabitRequest: Validatable {
+  static func validations(_ validations: inout Validations) {
+    validations.add("title", as: String.self, is: !.empty)
+  }
+}
+
 /// Request body used to update an existing habit.
 ///
 /// All fields are optional so clients can update only the values that changed.

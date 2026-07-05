@@ -15,7 +15,7 @@ struct CreateHabit: AsyncMigration {
   /// Each habit belongs to a user through `user_id`. The foreign key cascades on
   /// delete so a user's habits are removed automatically when the user is
   /// deleted. New habits default to active unless explicitly stored otherwise.
-  func prepare(on database: Database) async throws {
+  func prepare(on database: any Database) async throws {
     try await database.schema(Habit.schema)
       .id()
       .field("user_id", .uuid, .required, .references(User.schema, "id", onDelete: .cascade))
@@ -30,7 +30,7 @@ struct CreateHabit: AsyncMigration {
   }
 
   /// Drops the `habits` table when the migration is reverted.
-  func revert(on database: Database) async throws {
+  func revert(on database: any Database) async throws {
     try await database.schema(Habit.schema).delete()
   }
 }
