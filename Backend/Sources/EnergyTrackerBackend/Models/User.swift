@@ -29,12 +29,14 @@ final class User: Model, Content, @unchecked Sendable {
   @Field(key: "display_name")
   var displayName: String?
   
-  @Field(key: "avatar_url")
-  var avatarURL: String?
-  
   @Timestamp(key: "created_at", on: .create)
   var createdAt: Date?
   
+  @OptionalField(key: "avatar_small_url")
+  var avatarSmallURL: String?
+  
+  @OptionalField(key: "avatar_large_url")
+  var avatarLargeURL: String?
   
   /// Creates an empty `User` instance required by Fluent.
   init() { }

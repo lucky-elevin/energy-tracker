@@ -82,7 +82,12 @@ func withTestApp(_ body: (Application) async throws -> Void) async throws {
   try await TestDatabaseManager.createDatabase(named: testDatabaseName)
   let app = try await Application.make(.testing)
   do {
-    try await configure(app, databaseName: testDatabaseName)
+    try await configure(
+      app,
+      databaseName: testDatabaseName,
+      avatarProcessor: NoOpAvatarProcessor()
+    )
+
     try await app.autoMigrate()
     try await body(app)
     try await app.asyncShutdown()
