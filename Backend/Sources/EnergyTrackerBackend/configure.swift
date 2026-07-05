@@ -78,6 +78,8 @@ public func configure(
   
   app.passwords.use(.bcrypt)
   app.migrations.add(CreateUser())
+  app.migrations.add(CreateHabit())
+  
   app.views.use(.leaf)
   app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
 
